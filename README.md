@@ -3,7 +3,7 @@
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=bonomo06" alt="bonomo06" /></a> </p>
 
 <p>My name is Pedro Bonomo, I'm 18 years old and I'm always learning. In search of full-stack</p>
-<h4>FATEC- - INDAIATUBA</h4>
+<h4>FATEC - INDAIATUBA</h4>
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
