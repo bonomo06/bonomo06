@@ -2,6 +2,9 @@
 
 <p align="left"> <a href="https://github.com/ryo-ma/github-profile-trophy"><img src="https://github-profile-trophy.vercel.app/?username=bonomo06" alt="bonomo06" /></a> </p>
 
+<p>My name is Pedro Bonomo, I'm 18 years old and I'm always learning. In search of full-stack</p>
+<h4>FATEC- - INDAIATUBA</h4>
+
 <h3 align="left">Connect with me:</h3>
 <p align="left">
 <a href="https://linkedin.com/in/pedro-bonomo-2b24721a4" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="pedro-bonomo-2b24721a4" height="30" width="40" /></a>
