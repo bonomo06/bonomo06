@@ -65,6 +65,6 @@
 
 ###
 
-<img src="https://raw.githubusercontent.com/bonomo06/bonomo06/output/snake.svg" alt="Snake animation" />
+
 
 ###
