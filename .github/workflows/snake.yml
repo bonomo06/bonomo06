@@ -2,7 +2,7 @@ name: Generate Pacman
 
 on:
   schedule:
-    - cron: "0 */24 * * *" # roda a cada 24h
+    - cron: "0 */24 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,12 +12,22 @@ jobs:
     permissions:
       contents: write
     steps:
-      # Gera o Pacman (Action correta agora)
+      # 1. Faz o checkout do código (importante para não dar erro)
+      - uses: actions/checkout@v3
+
+      # 2. Gera o Pacman (Salva na raiz)
       - uses: abozanona/pacman-contribution-graph@main
         with:
           github_user_name: bonomo06
 
-      # Envia para a branch output
+      # 3. CRIA A PASTA dist E MOVE OS ARQUIVOS (O Pulo do Gato 😺)
+      - name: Move files to dist
+        run: |
+          mkdir -p dist
+          mv pacman-contribution-graph.svg dist/
+          mv pacman-contribution-graph-dark.svg dist/
+
+      # 4. Envia a pasta dist para a branch output
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
