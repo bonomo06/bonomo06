@@ -15,8 +15,10 @@ jobs:
       # 1. Faz o checkout do código (importante para não dar erro)
       - uses: actions/checkout@v3
 
-      # 2. Gera o Pacman (Salva na raiz)
+     # 2. Gera o Pacman (Salva na raiz)
       - uses: abozanona/pacman-contribution-graph@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # <--- ADICIONE ISSO AQUI
         with:
           github_user_name: bonomo06
 
