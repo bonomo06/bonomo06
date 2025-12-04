@@ -1,5 +1,4 @@
 name: Generate Pacman
-
 on:
   schedule:
     - cron: "0 */24 * * *"
@@ -11,34 +10,61 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    
     steps:
-      # 1. Faz o checkout
-      - uses: actions/checkout@v3
-
-      # 2. Gera o Pacman (Tentativa com Token no WITH e ENV)
-      - uses: abozanona/pacman-contribution-graph@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 1. Checkout do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # 2. Gera o gráfico Pacman
+      - name: Generate Pacman contribution graph
+        uses: abozanona/pacman-contribution-graph@main
         with:
           github_user_name: bonomo06
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Adicionado aqui também por segurança
-
-      # 3. Debug: Lista arquivos para termos certeza que foi criado
-      - name: Check files
-        run: ls -la
-
-      # 4. Move e Cria a pasta dist
-      - name: Move files to dist
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # 3. Debug: Lista todos os arquivos gerados
+      - name: List all files (debug)
         run: |
-          mkdir -p dist
-          # O comando abaixo move ignorando erros se um dos arquivos não existir, pra gente ver o log depois
-          mv pacman-contribution-graph.svg dist/ || echo "Pacman normal não encontrado"
-          mv pacman-contribution-graph-dark.svg dist/ || echo "Pacman dark não encontrado"
-
-      # 5. Envia para a branch output
-      - uses: crazy-max/ghaction-github-pages@v3.1.0
+          echo "=== Root directory ==="
+          ls -la
+          echo "=== Finding SVG files ==="
+          find . -name "*.svg" -type f
+      
+      # 4. Cria diretório output e move os arquivos
+      - name: Prepare output directory
+        run: |
+          mkdir -p output
+          
+          # Tenta encontrar e mover os arquivos SVG
+          if [ -f "pacman-contribution-graph.svg" ]; then
+            echo "Found light theme file"
+            mv pacman-contribution-graph.svg output/
+          else
+            echo "Light theme file not found"
+          fi
+          
+          if [ -f "pacman-contribution-graph-dark.svg" ]; then
+            echo "Found dark theme file"
+            mv pacman-contribution-graph-dark.svg output/
+          else
+            echo "Dark theme file not found"
+          fi
+          
+          # Verifica se pelo menos um arquivo foi movido
+          if [ -z "$(ls -A output)" ]; then
+            echo "ERROR: No files were generated!"
+            exit 1
+          fi
+          
+          echo "=== Files in output directory ==="
+          ls -la output/
+      
+      # 5. Deploy para a branch output
+      - name: Deploy to output branch
+        uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
-          build_dir: dist
+          build_dir: output
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
