@@ -50,9 +50,9 @@
 
 <div align="center">
   <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bonomo06/bonomo06/output/pacman-contribution-graph-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bonomo06/bonomo06/output/pacman-contribution-graph.svg">
-  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/bonomo06/bonomo06/output/pacman-contribution-graph.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/bonomo06/bonomo06/output/pacman-contribution-graph-dark.svg?v=1">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/bonomo06/bonomo06/output/pacman-contribution-graph.svg?v=1">
+  <img alt="pacman contribution graph" src="https://raw.githubusercontent.com/bonomo06/bonomo06/output/pacman-contribution-graph.svg?v=1">
 </picture>
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=bonomo06&radius=16&theme=gruvbox&area=true&order=5" height="300" alt="activity-graph graph"  />
 </div>
