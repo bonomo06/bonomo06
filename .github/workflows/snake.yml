@@ -1,0 +1,31 @@
+name: Generate Datas
+
+on:
+  schedule: # executa a cada 12 horas
+    - cron: "0 */12 * * *"
+  workflow_dispatch: # permite rodar manualmente clicando num botão
+
+jobs:
+  build:
+    name: Jobs to update datas
+    runs-on: ubuntu-latest
+    steps:
+      # Snake Animation
+      - uses: Platane/snk@v3
+        with:
+          # nome do usuario do github
+          github_user_name: bonomo06
+          # lista de arquivos para gerar (svg, gif, dark, light)
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+            dist/pacman-contribution-graph.svg?palette=github-light
+            dist/pacman-contribution-graph-dark.svg?palette=github-dark
+
+      # Push para a branch "output"
+      - uses: crazy-max/ghaction-github-pages@v3.1.0
+        with:
+          target_branch: output
+          build_dir: dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
