@@ -35,28 +35,37 @@ jobs:
       - name: Prepare output directory
         run: |
           mkdir -p output
-          
-          # Tenta encontrar e mover os arquivos SVG
-          if [ -f "pacman-contribution-graph.svg" ]; then
-            echo "Found light theme file"
-            mv pacman-contribution-graph.svg output/
-          else
-            echo "Light theme file not found"
+          echo "=== Root directory ==="
+          ls -la
+          echo "=== Finding SVG files ==="
+          find . -maxdepth 1 -type f -name "pacman-contribution-graph*.svg" -print
+
+          FOUND=0
+          for f in pacman-contribution-graph*.svg; do
+            if [ -f "$f" ]; then
+              echo "Moving $f -> output/"
+              mv "$f" output/
+              FOUND=1
+            fi
+          done
+
+          # Fallback: move any svg if none of the above were present
+          if [ "$FOUND" -eq 0 ]; then
+            for f in *.svg; do
+              if [ -f "$f" ]; then
+                echo "Fallback: moving $f -> output/"
+                mv "$f" output/
+                FOUND=1
+              fi
+            done
           fi
-          
-          if [ -f "pacman-contribution-graph-dark.svg" ]; then
-            echo "Found dark theme file"
-            mv pacman-contribution-graph-dark.svg output/
-          else
-            echo "Dark theme file not found"
-          fi
-          
-          # Verifica se pelo menos um arquivo foi movido
-          if [ -z "$(ls -A output)" ]; then
-            echo "ERROR: No files were generated!"
+
+          if [ "$FOUND" -eq 0 ]; then
+            echo "ERROR: No SVG files were generated. Listing current files:"
+            ls -la
             exit 1
           fi
-          
+
           echo "=== Files in output directory ==="
           ls -la output/
       
