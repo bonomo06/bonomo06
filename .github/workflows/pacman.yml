@@ -12,24 +12,30 @@ jobs:
     permissions:
       contents: write
     steps:
-      # 1. Faz o checkout do código (importante para não dar erro)
+      # 1. Faz o checkout
       - uses: actions/checkout@v3
 
-     # 2. Gera o Pacman (Salva na raiz)
+      # 2. Gera o Pacman (Tentativa com Token no WITH e ENV)
       - uses: abozanona/pacman-contribution-graph@main
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # <--- ADICIONE ISSO AQUI
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           github_user_name: bonomo06
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Adicionado aqui também por segurança
 
-      # 3. CRIA A PASTA dist E MOVE OS ARQUIVOS (O Pulo do Gato 😺)
+      # 3. Debug: Lista arquivos para termos certeza que foi criado
+      - name: Check files
+        run: ls -la
+
+      # 4. Move e Cria a pasta dist
       - name: Move files to dist
         run: |
           mkdir -p dist
-          mv pacman-contribution-graph.svg dist/
-          mv pacman-contribution-graph-dark.svg dist/
+          # O comando abaixo move ignorando erros se um dos arquivos não existir, pra gente ver o log depois
+          mv pacman-contribution-graph.svg dist/ || echo "Pacman normal não encontrado"
+          mv pacman-contribution-graph-dark.svg dist/ || echo "Pacman dark não encontrado"
 
-      # 4. Envia a pasta dist para a branch output
+      # 5. Envia para a branch output
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
