@@ -1,28 +1,23 @@
-name: Generate Datas
+name: Generate Pacman
 
 on:
-  schedule: # executa a cada 12 horas
-    - cron: "0 */12 * * *"
-  workflow_dispatch: # permite rodar manualmente clicando num botão
+  schedule:
+    - cron: "0 */24 * * *" # roda a cada 24h
+  workflow_dispatch:
 
 jobs:
   build:
     name: Jobs to update datas
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      # Snake Animation
-      - uses: Platane/snk@v3
+      # Gera o Pacman (Action correta agora)
+      - uses: abozanona/pacman-contribution-graph@main
         with:
-          # nome do usuario do github
           github_user_name: bonomo06
-          # lista de arquivos para gerar (svg, gif, dark, light)
-          outputs: |
-            dist/github-contribution-grid-snake.svg
-            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
-            dist/pacman-contribution-graph.svg?palette=github-light
-            dist/pacman-contribution-graph-dark.svg?palette=github-dark
 
-      # Push para a branch "output"
+      # Envia para a branch output
       - uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
