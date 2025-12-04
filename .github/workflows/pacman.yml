@@ -6,74 +6,92 @@ on:
 
 jobs:
   build:
-    name: Jobs to update datas
+    name: Generate Pacman Graph
     runs-on: ubuntu-latest
     permissions:
       contents: write
     
     steps:
-      # 1. Checkout do repositório
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      # 2. Gera o gráfico Pacman
       - name: Generate Pacman contribution graph
         uses: abozanona/pacman-contribution-graph@main
         with:
           github_user_name: bonomo06
           github_token: ${{ secrets.GITHUB_TOKEN }}
       
-      # 3. Debug: Lista todos os arquivos gerados
-      - name: List all files (debug)
+      # Debug completo - procura em todos os diretórios
+      - name: Debug - Find all files
         run: |
+          echo "=== Complete directory tree ==="
+          find . -type f -name "*.svg" || echo "No SVG files found"
+          echo ""
           echo "=== Root directory ==="
           ls -la
-          echo "=== Finding SVG files ==="
-          find . -name "*.svg" -type f
+          echo ""
+          echo "=== Dist directory ==="
+          ls -la dist/ 2>/dev/null || echo "No dist directory"
+          echo ""
+          echo "=== All directories ==="
+          find . -type d -maxdepth 2
       
-      # 4. Cria diretório output e move os arquivos
-      - name: Prepare output directory
+      - name: Prepare and move files
         run: |
           mkdir -p output
-          echo "=== Root directory ==="
-          ls -la
-          echo "=== Finding SVG files ==="
-          find . -maxdepth 1 -type f -name "pacman-contribution-graph*.svg" -print
-
+          
+          # Procura SVGs em vários locais possíveis
           FOUND=0
-          for f in pacman-contribution-graph*.svg; do
-            if [ -f "$f" ]; then
-              echo "Moving $f -> output/"
-              mv "$f" output/
+          
+          # Tentativa 1: root directory
+          if ls pacman-*.svg 1> /dev/null 2>&1; then
+            echo "Found SVG files in root"
+            mv pacman-*.svg output/
+            FOUND=1
+          fi
+          
+          # Tentativa 2: dist directory
+          if [ -d "dist" ] && ls dist/*.svg 1> /dev/null 2>&1; then
+            echo "Found SVG files in dist/"
+            mv dist/*.svg output/
+            FOUND=1
+          fi
+          
+          # Tentativa 3: qualquer SVG no root
+          if [ "$FOUND" -eq 0 ] && ls *.svg 1> /dev/null 2>&1; then
+            echo "Found generic SVG files in root"
+            mv *.svg output/
+            FOUND=1
+          fi
+          
+          # Tentativa 4: procura recursiva
+          if [ "$FOUND" -eq 0 ]; then
+            SVG_FILES=$(find . -name "*.svg" -type f | grep -v ".git" | grep -v "node_modules")
+            if [ ! -z "$SVG_FILES" ]; then
+              echo "Found SVG files recursively:"
+              echo "$SVG_FILES"
+              echo "$SVG_FILES" | while read file; do
+                cp "$file" output/
+              done
               FOUND=1
             fi
-          done
-
-          # Fallback: move any svg if none of the above were present
-          if [ "$FOUND" -eq 0 ]; then
-            for f in *.svg; do
-              if [ -f "$f" ]; then
-                echo "Fallback: moving $f -> output/"
-                mv "$f" output/
-                FOUND=1
-              fi
-            done
           fi
-
+          
           if [ "$FOUND" -eq 0 ]; then
-            echo "ERROR: No SVG files were generated. Listing current files:"
-            ls -la
+            echo "ERROR: No SVG files found anywhere"
+            echo "Listing all files:"
+            find . -type f | grep -v ".git"
             exit 1
           fi
-
+          
           echo "=== Files in output directory ==="
           ls -la output/
       
-      # 5. Deploy para a branch output
       - name: Deploy to output branch
         uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
           build_dir: output
+          keep_history: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
