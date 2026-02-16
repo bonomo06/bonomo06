@@ -9,7 +9,7 @@
 ## 👨‍💻 About me
 
 - 🎓 **Student** at Fatec Indaiatuba
-- 💼 **Intern** at **IAHUB** - Working with automation and AI
+- 💼 **Junior** at **MakeVendas** - Working with automation, AI and API
 - 🤖 **n8n Specialist** - Automation & Workflow Expert
 - 🌱 Currently learning **AI/ML** and **Cloud Computing**
 - ⚡ Fun fact: I love turning complex processes into simple automations!
